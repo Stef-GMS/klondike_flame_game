@@ -1,4 +1,4 @@
-*.html linguist-detectable=false
+*.dart linguist-detectable=false
 
 # Auto detect text files and perform LF normalization
 * text=auto
