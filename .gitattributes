@@ -3,13 +3,9 @@
 *.cpp linguist-detectable=false
 *.kt linguist-detectable=false
 *.rb linguist-detectable=false
-*.swift linguist-detectable=false
 *.cmake linguist-detectable=false
-*.gradle linguist-detectable=false
 *.json linguist-detectable=false
-*.plist linguist-detectable=false
 *.html linguist-detectable=false
-*.xml linguist-detectable=false
 *.xib linguist-detectable=false
 *.storyboard linguist-detectable=false
 *.manifest linguist-detectable=false
