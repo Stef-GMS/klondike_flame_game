@@ -69,6 +69,7 @@ class KlondikeGame extends FlameGame {
       ..viewfinder.anchor = Anchor.topCenter;
     add(camera);
 
+    // add cards to table
     final random = Random();
     for (var i = 0; i < 7; i++) {
       for (var j = 0; j < 4; j++) {
