@@ -1,12 +1,15 @@
 import 'dart:math';
 import 'dart:ui';
 import 'package:flame/components.dart';
+import 'package:flame/experimental.dart';
+import 'package:flame/game.dart';
 
 import '../klondike_game.dart';
+import '../pile.dart';
 import '../rank.dart';
 import '../suit.dart';
 
-class Card extends PositionComponent {
+class Card extends PositionComponent with DragCallbacks {
   Card(int intRank, int intSuit)
       : rank = Rank.fromInt(intRank),
         suit = Suit.fromInt(intSuit),
@@ -15,9 +18,13 @@ class Card extends PositionComponent {
 
   final Rank rank;
   final Suit suit;
-  bool _faceUp;
+  Pile? pile;
+  bool _faceUp = false;
+  bool _isDragging = false;
+  final List<Card> attachedCards = [];
 
   bool get isFaceUp => _faceUp;
+  bool get isFaceDown => !_faceUp;
   void flip() => _faceUp = !_faceUp;
 
   @override
@@ -234,6 +241,56 @@ class Card extends PositionComponent {
     );
     if (rotate) {
       canvas.restore();
+    }
+  }
+
+  @override
+  void onDragStart(DragStartEvent event) {
+    super.onDragStart(event);
+    if (pile?.canMoveCard(this) ?? false) {
+      _isDragging = true;
+      priority = 100;
+    }
+  }
+
+  @override
+  void onDragUpdate(DragUpdateEvent event) {
+    if (!_isDragging) {
+      return;
+    }
+    final cameraZoom = (findGame()! as FlameGame)
+        .firstChild<CameraComponent>()!
+        .viewfinder
+        .zoom;
+    position += event.delta / cameraZoom;
+  }
+
+  @override
+  void onDragEnd(DragEndEvent event) {
+    super.onDragEnd(event);
+    if (!_isDragging) {
+      return;
+    }
+    _isDragging = false;
+    final dropPiles = parent!
+        .componentsAtPoint(position + size / 2)
+        .whereType<Pile>()
+        .toList();
+    if (dropPiles.isNotEmpty) {
+      if (dropPiles.first.canAcceptCard(this)) {
+        pile!.removeCard(this);
+        dropPiles.first.acquireCard(this);
+        if (attachedCards.isNotEmpty) {
+          attachedCards.forEach((card) => dropPiles.first.acquireCard(card));
+          attachedCards.clear();
+        }
+        return;
+      }
+    }
+    pile!.returnCard(this);
+    if (attachedCards.isNotEmpty) {
+      attachedCards.forEach((card) => pile!.returnCard(card));
+      attachedCards.clear();
     }
   }
 }

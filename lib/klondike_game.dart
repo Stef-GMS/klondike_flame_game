@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
@@ -6,10 +7,10 @@ import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 
 import 'components/card.dart';
-import 'components/foundation.dart';
-import 'components/pile.dart';
-import 'components/stock.dart';
-import 'components/waste.dart';
+import 'components/foundation_pile.dart';
+import 'components/tableau_pile.dart';
+import 'components/stock_pile.dart';
+import 'components/waste_pile.dart';
 
 // In Flame universe, the FlameGame class is the cornerstone of most games. This class runs
 // the game loop, dispatches events, owns all the components that comprise the game (the
@@ -20,6 +21,11 @@ class KlondikeGame extends FlameGame {
   static const double cardGap = 175.0;
   static const double cardRadius = 100.0;
   static final Vector2 cardSize = Vector2(cardWidth, cardHeight);
+
+  static final cardRRect = RRect.fromRectAndRadius(
+    const Rect.fromLTWH(0, 0, cardWidth, cardHeight),
+    const Radius.circular(cardRadius),
+  );
 
   @override
   Future<void> onLoad() async {
@@ -32,22 +38,22 @@ class KlondikeGame extends FlameGame {
     // they can assume the spritesheet is already loaded.
     await Flame.images.load('klondike_sprites.png');
 
-    final stock = Stock()
+    final stock = StockPile()
       ..size = cardSize
       ..position = Vector2(cardGap, cardGap);
-    final waste = Waste()
+    final waste = WastePile()
       ..size = cardSize
       ..position = Vector2(cardWidth + 2 * cardGap, cardGap);
     final foundations = List.generate(
       4,
-      (i) => Foundation()
-        ..size = cardSize
-        ..position =
-            Vector2((i + 3) * (cardWidth + cardGap) + cardGap, cardGap),
+      (i) => FoundationPile(
+        i,
+        position: Vector2((i + 3) * (cardWidth + cardGap) + cardGap, cardGap),
+      ),
     );
     final piles = List.generate(
       7,
-      (i) => Pile()
+      (i) => TableauPile()
         ..size = cardSize
         ..position = Vector2(
           cardGap + i * (cardWidth + cardGap),
@@ -69,19 +75,21 @@ class KlondikeGame extends FlameGame {
       ..viewfinder.anchor = Anchor.topCenter;
     add(camera);
 
-    // add cards to table
-    final random = Random();
+    // Create a full deck of 52 cards and put them onto the stock pile
+    final cards = [
+      for (var rank = 1; rank <= 13; rank++)
+        for (var suit = 0; suit < 4; suit++) Card(rank, suit)
+    ];
+    cards.shuffle();
+    world.addAll(cards);
+
     for (var i = 0; i < 7; i++) {
-      for (var j = 0; j < 4; j++) {
-        final card = Card(random.nextInt(13) + 1, random.nextInt(4))
-          ..position = Vector2(100 + i * 1150, 100 + j * 1500)
-          ..addToParent(world);
-        if (random.nextDouble() < 0.9) {
-          // flip face up with 90% probability
-          card.flip();
-        }
+      for (var j = i; j < 7; j++) {
+        piles[j].acquireCard(cards.removeLast());
       }
+      piles[i].flipTopCard();
     }
+    cards.forEach(stock.acquireCard);
   }
 }
 

@@ -5,8 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e23597b7-7c31-4fb0-986e-0396a64774fe" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/lib/pile.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/components/card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/components/card.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/components/foundation.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/components/foundation_pile.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/components/pile.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/components/tableau_pile.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/components/stock.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/components/stock_pile.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/components/waste.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/components/waste_pile.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/klondike_game.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/klondike_game.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
